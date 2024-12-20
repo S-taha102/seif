@@ -1,7 +1,7 @@
-#define cspeed 9  
-#define forw 8   
-#define back 7   
-#define buzzer 6 
+#define cspeed 
+#define forw 
+#define back 
+#define buzzer 
 
 void setup() {
   Serial.begin(9600);
