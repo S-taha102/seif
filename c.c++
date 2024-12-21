@@ -1,62 +1,61 @@
-// Pin assignments for motor control
-int forwardPin = 9;  // Pin for moving forward (motor control)
-int reversePin = 10; // Pin for moving backward (motor control)
-int buzzerPin = 11;  // Pin for the buzzer
+
+int forwardPin = 9;  
+int reversePin = 10; 
+int buzzerPin = 11;  
 
 void setup() {
-  // Initialize motor and buzzer pins as outputs
+  
   pinMode(forwardPin, OUTPUT);
   pinMode(reversePin, OUTPUT);
   pinMode(buzzerPin, OUTPUT);
   
-  // Start serial communication
+  
   Serial.begin(9600);
 }
 
 void loop() {
   if (Serial.available() > 0) {
-    char receivedChar = Serial.read();  // Read the incoming character
+    char receivedChar = Serial.read();  
     
-    // Stop sign detected (Reverse)
-    if (receivedChar == 'S') {
-      moveBackward();   // Move backward (Reverse)
-      stopMoving();     // Ensure both motors stop after reversing
+    
+    if (receivedChar == 'S') 
+      moveBackward();   
+      stopMoving();     
     }
     
-    // Speed sign detected (Move Forward)
+    
     else if (receivedChar == 'P') {
-      moveForward();    // Move forward
-      stopMoving();     // Ensure both motors stop after moving forward
+      moveForward();    
+      stopMoving();     
     }
     
-    // Yield sign detected (Activate Buzzer)
+    
     else if (receivedChar == 'Y') {
-      turnBuzzer();     // Turn on buzzer
+      turnBuzzer();     
     }
   }
 }
 
-// Function to move forward (motor control)
+
 void moveForward() {
-  digitalWrite(forwardPin, HIGH);  // Turn on motor for moving forward
-  digitalWrite(reversePin, LOW);   // Turn off motor for reverse
+  digitalWrite(forwardPin, HIGH);  
+  digitalWrite(reversePin, LOW);   
 }
 
-// Function to move backward (reverse)
+
 void moveBackward() {
-  digitalWrite(forwardPin, LOW);   // Turn off motor for moving forward
-  digitalWrite(reversePin, HIGH);  // Turn on motor for reverse
+  digitalWrite(forwardPin, LOW);   
+  digitalWrite(reversePin, HIGH);  
 }
 
-// Function to stop both motors
+
 void stopMoving() {
-  digitalWrite(forwardPin, LOW);   // Turn off forward motor
-  digitalWrite(reversePin, LOW);   // Turn off reverse motor
+  digitalWrite(forwardPin, LOW);   
+  digitalWrite(reversePin, LOW);   
 }
 
-// Function to turn on the buzzer
+
 void turnBuzzer() {
-  digitalWrite(buzzerPin, HIGH);   // Turn on buzzer
-  delay(1000);                     // Keep it on for 1 second
-  digitalWrite(buzzerPin, LOW);    // Turn off buzzer
-}
+  digitalWrite(buzzerPin, HIGH);   
+  delay(1000);                     
+  digitalWrite(buzzerPin, LOW);    
