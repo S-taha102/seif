@@ -1,41 +1,72 @@
-import cv2 as cv
+import cv2
 import serial
 
-stop=cv.CascadeClassifier('.git/haar_stop.xml')
-speed = cv.CascadeClassifier('.git/haar_speed.xml')
-yeild=cv.CascadeClassifier('.git/haar_yield.xml')
+# Setup the serial communication
+ser = serial.Serial('COM3', 9600)  # Change 'COM3' to your Arduino port
 
-arduino=serial.Serial('',9600)
+# Load the Haar Cascade classifiers
+stop_cascade = cv2.CascadeClassifier('haar_stop.xml')
+yield_cascade = cv2.CascadeClassifier('haar_yield.xml')
+speed_cascade = cv2.CascadeClassifier('haar_speed.xml')
 
-cap=cv.VideoCapture(0)
+def detect_signs(frame):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-while(True):
-    ret,frame=cap.read()
-    gray=cv.cvtColor(frame,cv.COLOR_BGR2GRAY)
-    
-    stopsign=stop.detectMultiScale(1.1,4)
-    speedsign=speed.detectMultiScale(1.1,4)
-    yeildsign=yeild.detectMultiScale(1.1,4)
-    
-    if len(stopsign)>0:
-        print('stop sign detect')
-        arduino.write(b'reverse\n')
-    elif len(speedsign)>0:
-        print('speed sign move forward')    
-        arduino.write(b'forward\n')
-    elif len(yeildsign)>0:
-        print('yeild sign detected')    
-        arduino.write(b'buzzer\n')
-    cv.imshow('cam',frame)
-    
-    
+    stop_signs = stop_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=6,
+        minSize=(30, 30)
+    )
 
+    yield_signs = yield_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=4,
+        minSize=(30, 30)
+    )
 
+    speed_signs = speed_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=4,
+        minSize=(30, 30)
+    )
 
-    cap.release()
-    cv.destroyAllWindows()
+    for (x, y, w, h) in stop_signs:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.putText(frame, "Stop Sign", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        ser.write(b'S')  # Send 'S' for stop sign to Arduino
 
-      
+    for (x, y, w, h) in yield_signs:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        cv2.putText(frame, "Yield Sign", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+        ser.write(b'Y')  # Send 'Y' for yield sign to Arduino
+
+    for (x, y, w, h) in speed_signs:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        cv2.putText(frame, "Speed Sign", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+        ser.write(b'P')  # Send 'P' for speed sign to Arduino
+
+    return frame
+
+cap = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    processed_frame = detect_signs(frame)
+    cv2.imshow('Sign Detection', processed_frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('e'):  # Press 'e' to exit
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+ser.close()
+
     
 
 
