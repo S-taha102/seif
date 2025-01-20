@@ -1,21 +1,21 @@
 import cv2
 import numpy as np
 
-def process_coral_image(image_path, grid_rows, grid_cols):
+def process_coral_image(image_path, rows, cols):
     
     img = cv2.imread(image_path)
     height, width, _ = img.shape
 
     white_img = np.ones_like(img) * 255
 
-    cell_height = height // grid_rows
-    cell_width = width // grid_cols
+    cell_height = height // rows
+    cell_width = width // cols
 
     
-    for i in range(1, grid_rows):
+    for i in range(1, rows):
         y = i * cell_height
         cv2.line(white_img, (0, y), (width, y), (0, 0, 0), 1)
-    for j in range(1, grid_cols):
+    for j in range(1, cols):
         x = j * cell_width
         cv2.line(white_img, (x, 0), (x, height), (0, 0, 0), 1)
 
@@ -41,8 +41,8 @@ def process_coral_image(image_path, grid_rows, grid_cols):
 
 
 image_path = 'coral-reef-1.jpg'  
-grid_rows = 8  
-grid_cols = 16  
+rows = 8  
+cols = 16  
 
-process_coral_image(image_path, grid_rows, grid_cols)
+process_coral_image(image_path, rows, cols)
 
