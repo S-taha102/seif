@@ -12,7 +12,7 @@ def measure_object(image_path, reference_length_cm):
     
     def onclick(event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
-            global points, reference_pixels, is_reference_set
+            global points, reference_pixels, is_reference
             points.append((x, y))
             cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
             
@@ -20,9 +20,9 @@ def measure_object(image_path, reference_length_cm):
                 pixel_distance = np.sqrt((points[1][0] - points[0][0])**2 + 
                                       (points[1][1] - points[0][1])**2)
                 
-                if not is_reference_set:
+                if not is_reference:
                     reference_pixels = pixel_distance
-                    is_reference_set = True
+                    is_reference = True
                     cv2.line(img, points[0], points[1], (255, 0, 0), 2)
                     cv2.putText(img, f'{reference_length_cm:.1f}', 
                               (int((points[0][0] + points[1][0])/2), 
@@ -41,10 +41,10 @@ def measure_object(image_path, reference_length_cm):
     cv2.namedWindow('Image')
     cv2.setMouseCallback('Image', onclick)
     
-    global points, reference_pixels, is_reference_set
+    global points, reference_pixels, is_reference
     points = []
     reference_pixels = None
-    is_reference_set = False
+    is_reference = False
     
     
     
