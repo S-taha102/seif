@@ -9,8 +9,8 @@ def detect_changes(before_path, after_path, threshold=30):
     
     before = load_and_preprocess(before_path)
     after = load_and_preprocess(after_path)
-    diff = cv2.absdiff(before, after)
-    _, change_mask = cv2.threshold(diff, threshold, 255, cv2.THRESH_BINARY)
+    dif = cv2.absdiff(before, after)
+    _, change_mask = cv2.threshold(dif, threshold, 255, cv2.THRESH_BINARY)
     return change_mask
 
 def main(before_path, after_path):
