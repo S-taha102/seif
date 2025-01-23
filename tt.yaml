@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 4
+names: ['coins', 'half', 'onepound', 'quarter']
+
+roboflow:
+  workspace: seif-taha-rvzyw
+  project: egyptian-coins-r80ed
+  version: 1
+  license: Public Domain
+  url: https://universe.roboflow.com/seif-taha-rvzyw/egyptian-coins-r80ed/dataset/1
