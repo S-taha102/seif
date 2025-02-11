@@ -7,7 +7,7 @@ detector = aruco.ArucoDetector(aruco_dict)
 
 cap = cv2.VideoCapture(0)
 
-aruco_real_size_cm = 5.0  
+aruco_size_cm = 5.0  
 
 selected_points = []
 pixel_per_cm = None
@@ -39,7 +39,7 @@ while True:
             c = corners[i][0]
             top_left, top_right, _, _ = c
             marker_width_pixels = np.linalg.norm(top_right - top_left)
-            pixel_per_cm = marker_width_pixels / aruco_real_size_cm
+            pixel_per_cm = marker_width_pixels / aruco_size_cm
             cv2.polylines(frame, [c.astype(int)], True, (0, 255, 0), 2)
             cv2.putText(frame, f"Pixel/cm: {pixel_per_cm:.2f}", (int(top_left[0]), int(top_left[1] - 10)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
@@ -50,7 +50,7 @@ while True:
         cv2.putText(frame, f"Width: {width:.2f} cm", (mid_x + 10, mid_y),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
     
-    cv2.imshow("ArUco Object Measurement", frame)
+    cv2.imshow("ArUco Measurement", frame)
     
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
