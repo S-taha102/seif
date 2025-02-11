@@ -10,7 +10,7 @@ parameters = cv2.aruco.DetectorParameters()
 
 
 points = []
-pixels_per_cm = None
+pixels_cm = None
 
 def click_event(event, x, y, flags, param):
     global points, pixels_per_cm
@@ -22,15 +22,15 @@ def click_event(event, x, y, flags, param):
             
             pixel_distance = np.linalg.norm(np.array(points[0]) - np.array(points[1]))
             # Convert to real-world distance (cm)
-            real_distance_cm = pixel_distance / pixels_per_cm
-            print(f"Measured Distance: {real_distance_cm:.2f} cm")
+            distance_cm = pixel_distance / pixels_per_cm
+            print(f"Measured Distance: {distance_cm:.2f} cm")
 
             
             cv2.line(frame, points[0], points[1], (0, 255, 0), 2)
             cv2.circle(frame, points[0], 5, (0, 0, 255), -1)
             cv2.circle(frame, points[1], 5, (0, 0, 255), -1)
             mid_x, mid_y = (points[0][0] + points[1][0]) // 2, (points[0][1] + points[1][1]) // 2
-            cv2.putText(frame, f"{real_distance_cm:.2f} cm", (mid_x, mid_y), 
+            cv2.putText(frame, f"{distance_cm:.2f} cm", (mid_x, mid_y), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
             points.clear()  
